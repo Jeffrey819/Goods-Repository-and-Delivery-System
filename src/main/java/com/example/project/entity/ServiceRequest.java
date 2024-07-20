@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ServiceRequests")
-public class ServiceRequests {
+public class ServiceRequest {
     @Id
     @Column(name = "RequestID",nullable = false,length = 36)
     private String requestId;
@@ -18,9 +18,9 @@ public class ServiceRequests {
     private String status;
 
     //Constructors
-    public ServiceRequests() {}
+    public ServiceRequest() {}
 
-    public ServiceRequests(String requestId, String customerId, String description, String status) {
+    public ServiceRequest(String requestId, String customerId, String description, String status) {
         this.requestId = requestId;
         this.customerId = customerId;
         this.description = description;

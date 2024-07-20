@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Reports")
-public class Reports {
+public class Report {
     @Id
     @Column(name = "ReportID",nullable = false,length = 36)
     private String reportId;
@@ -23,9 +23,9 @@ public class Reports {
     private LocalDateTime generatedDate;
 
     //Constructors
-    public Reports(){}
+    public Report(){}
 
-    public Reports(String reportId, String userId, String parameters, LocalDateTime generatedDate) {
+    public Report(String reportId, String userId, String parameters, LocalDateTime generatedDate) {
         this.reportId = reportId;
         this.userId = userId;
         this.parameters = parameters;

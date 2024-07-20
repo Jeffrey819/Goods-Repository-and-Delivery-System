@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Customers")
-public class Customers {
+public class Customer {
     //Primary key: CustomerID
     @Id
     @Column(name = "CustomerID", nullable = false, length = 36)
@@ -22,10 +22,10 @@ public class Customers {
     @Column(name = "Phone", length = 20)
     private String phone;
 
-    public Customers() {
+    public Customer() {
     }
 
-    public Customers(String customerId,String name,String email,String phone){
+    public Customer(String customerId,String name,String email,String phone){
         this.customerId = customerId;
         this.name = name;
         this.email = email;

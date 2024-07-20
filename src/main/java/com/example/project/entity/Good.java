@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Goods")
-public class Goods {
+public class Good {
     @Id
     @Column(name = "GoodID", nullable = false, length = 36)
     private String goodId;
@@ -22,9 +22,9 @@ public class Goods {
     private int quantity;
 
     //Constructors
-    public Goods(){}
+    public Good(){}
 
-    public Goods(String goodId, String orderId, String description, int quantity) {
+    public Good(String goodId, String orderId, String description, int quantity) {
         this.goodId = goodId;
         this.orderId = orderId;
         this.description = description;

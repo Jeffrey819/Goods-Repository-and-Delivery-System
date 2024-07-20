@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 @Entity
 @Table(name = "Users")
-public class Users {
+public class User {
     @Id
     @Column(name = "UserID",nullable = false,length = 36)
     private String userId;
@@ -20,9 +20,9 @@ public class Users {
     private String role;
 
     //Constructors
-    public Users(){}
+    public User(){}
 
-    public Users(String userId, String username, String password, String role) {
+    public User(String userId, String username, String password, String role) {
         this.userId = userId;
         this.username = username;
         this.password = password;

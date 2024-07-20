@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Orders")
-public class Orders {
+public class Order {
     @Id
     @Column(name = "OrderID",nullable = false,length = 36)
     private String orderId;
@@ -36,9 +36,9 @@ public class Orders {
     private String remarks;
 
     //Constructors
-    public Orders(){}
+    public Order(){}
 
-    public Orders(String orderId,String customerId,LocalDateTime orderDate,String status,BigDecimal totalAmount,String paymentMethod,String deliveryMethod,String remarks ){
+    public Order(String orderId,String customerId,LocalDateTime orderDate,String status,BigDecimal totalAmount,String paymentMethod,String deliveryMethod,String remarks ){
         this.orderId = orderId;
         this.customerId = customerId;
         this.orderDate = orderDate;
