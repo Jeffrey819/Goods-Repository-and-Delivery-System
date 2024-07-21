@@ -1,13 +1,13 @@
 package com.example.project.controller;
 
 import com.example.project.entity.Customer;
-import com.example.project.repository.CustomerRepository;
 import com.example.project.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -26,15 +26,37 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-         Customer savedCustomer = customerService.save(customer);
-         return ResponseEntity.ok().body(savedCustomer);
-    }//Should send String message at the same time? Or should send back the saved customer or not?
+    public ResponseEntity<Map<String,String>> createCustomer(@RequestBody Customer customer) {
+         customerService.save(customer);
+         Map<String,String> info = new HashMap<>();
+         info.put("customerId", customer.getCustomerId());
+         info.put("message", "Customer created successfully");
+         return ResponseEntity.ok(info);
+    }
+
+    @PutMapping
+    public ResponseEntity<Map<String,String>> updateCustomer(@RequestBody Customer updatedCustomer) {
+        Optional<Customer> customer = customerService.findByCustomerId(updatedCustomer.getCustomerId());
+        if(customer.isPresent()) {
+            customerService.save(updatedCustomer);
+            Map<String,String> info = new HashMap<>();
+            info.put("customerId", updatedCustomer.getCustomerId());
+            info.put("message", "Customer updated successfully");
+            return ResponseEntity.ok(info);
+        }
+        else
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteCustomer(@RequestParam String customerId) {
+    public ResponseEntity<Map<String,String>> deleteCustomer(@RequestParam String customerId) {
         customerService.deleteByCustomerId(customerId);
-        return ResponseEntity.ok().body("Customer deleted successfully");
+        Map<String,String> info = new HashMap<>();
+        info.put("customerId", customerId);
+        info.put("message", "Customer deleted successfully");
+        return ResponseEntity.ok(info);
     }
 
 

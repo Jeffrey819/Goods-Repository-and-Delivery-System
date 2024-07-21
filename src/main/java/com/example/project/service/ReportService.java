@@ -12,8 +12,8 @@ public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
 
-    public Report save(Report report) {
-        return reportRepository.save(report);
+    public void save(Report report) {
+        reportRepository.save(report);
     }
 
     public Optional<Report> findByReportId(String reportId) {
