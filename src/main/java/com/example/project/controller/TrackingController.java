@@ -41,7 +41,7 @@ public class TrackingController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Map<String,String>> deleteTracking(@RequestParam("orderId"),String orderId){
+    public ResponseEntity<Map<String,String>> deleteTracking(@RequestParam("orderId") String orderId){
         trackingService.deleteByOrderId(orderId);
         Map<String,String> info = new HashMap<>();
         info.put("orderId",orderId);
