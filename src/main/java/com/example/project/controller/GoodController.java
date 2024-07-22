@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.example.project.entity.Good
-
 @RestController
 @RequestMapping("/goods")
 public class GoodController {
