@@ -3,6 +3,7 @@ package com.example.project.controller;
 import com.example.project.entity.Report;
 import com.example.project.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,7 @@ public class ReportController {
         reportService.save(report);
         info.put("reportId", report.getReportId());
         info.put("message","Report created successfully");
-        return ResponseEntity.ok(info);
+        return ResponseEntity.status(HttpStatus.CREATED).body(info);
     }
 
     @PutMapping

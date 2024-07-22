@@ -40,7 +40,7 @@ public class CustomerController {
              Map<String,String> info = new HashMap<>();
              info.put("customerId", customer.getCustomerId());
              info.put("message", "Customer created successfully");
-             return ResponseEntity.ok(info);
+             return ResponseEntity.status(HttpStatus.CREATED).body(info);
          }
 
     }

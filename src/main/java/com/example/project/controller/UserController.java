@@ -48,7 +48,7 @@ public class UserController {
             userService.save(newUser);
             info.put("userId",newUser.getUserId());
             info.put("message","User created successfully");
-            return ResponseEntity.ok(info);
+            return ResponseEntity.status(HttpStatus.CREATED).body(info);
         }
     }
 
