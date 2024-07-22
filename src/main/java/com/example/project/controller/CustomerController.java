@@ -3,6 +3,8 @@ package com.example.project.controller;
 import com.example.project.entity.Customer;
 import com.example.project.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,11 +29,20 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<Map<String,String>> createCustomer(@RequestBody Customer customer) {
-         customerService.save(customer);
-         Map<String,String> info = new HashMap<>();
-         info.put("customerId", customer.getCustomerId());
-         info.put("message", "Customer created successfully");
-         return ResponseEntity.ok(info);
+         Optional<Customer> savedCustomer= customerService.findByCustomerId(customer.getCustomerId());
+         if(savedCustomer.isPresent())
+         {
+             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+         }
+         else
+         {
+             customerService.save(customer);
+             Map<String,String> info = new HashMap<>();
+             info.put("customerId", customer.getCustomerId());
+             info.put("message", "Customer created successfully");
+             return ResponseEntity.ok(info);
+         }
+
     }
 
     @PutMapping

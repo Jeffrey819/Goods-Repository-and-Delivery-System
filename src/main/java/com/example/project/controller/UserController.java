@@ -34,6 +34,24 @@ public class UserController {
 
     }
 
+    @PostMapping
+    public ResponseEntity<Map<String,String>> createUser(@RequestBody User newUser){
+        Map<String,String> info = new Hashtable<>();
+        Optional<User> user = userService.findByUserId(newUser.getUserId());
+        if(user.isPresent()){
+            info.put("userId",user.get().getUserId());
+            info.put("message","User already exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(info);
+        }
+        else
+        {
+            userService.save(newUser);
+            info.put("userId",newUser.getUserId());
+            info.put("message","User created successfully");
+            return ResponseEntity.ok(info);
+        }
+    }
+
     @PostMapping("/signin")
     public ResponseEntity<Map<String,String>> signIn(@RequestParam("username") String username, @RequestParam("password") String password){
         Map<String,String> info = new Hashtable<>();
@@ -47,12 +65,8 @@ public class UserController {
                     return ResponseEntity.ok(info);
                 }
             }
-            return ResponseEntity.notFound().build();
         }
-        else
-        {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/signup")
@@ -60,7 +74,7 @@ public class UserController {
 
         Optional<User> exsitedUser = userService.findByUserId(user.getUserId());
         if(exsitedUser.isPresent()){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         else
         {
