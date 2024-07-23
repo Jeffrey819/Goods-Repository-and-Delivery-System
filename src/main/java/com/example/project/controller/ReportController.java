@@ -15,8 +15,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/reports")
 public class ReportController {
-    @Autowired
-    private ReportService reportService;
+    private final ReportService reportService;
+
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
+    }
 
     @GetMapping("/reportId")
     public ResponseEntity<Report> getReportByReportId(@RequestParam("reportId") String reportId) {

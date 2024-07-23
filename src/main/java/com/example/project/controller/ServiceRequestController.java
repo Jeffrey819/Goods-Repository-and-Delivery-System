@@ -15,8 +15,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("servicerequest")
 public class ServiceRequestController {
-    @Autowired
-    private ServiceRequestService serviceRequestService;
+    private final ServiceRequestService serviceRequestService;
+
+    public ServiceRequestController(ServiceRequestService serviceRequestService) {
+        this.serviceRequestService = serviceRequestService;
+    }
 
     @GetMapping("/requestId")
     public ResponseEntity<ServiceRequest> getByRequestId(@RequestParam("requestId") String requestId) {

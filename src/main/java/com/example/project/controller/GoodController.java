@@ -15,8 +15,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/goods")
 public class GoodController {
-    @Autowired
-    private GoodService goodService;
+    private final GoodService goodService;
+
+    public GoodController(GoodService goodService) {
+        this.goodService = goodService;
+    }
 
     @GetMapping
     public ResponseEntity<Good> getGoodByGoodId(@RequestParam String goodId) {

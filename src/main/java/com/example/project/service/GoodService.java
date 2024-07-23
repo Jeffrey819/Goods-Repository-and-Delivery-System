@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Service
 public class GoodService {
-    @Autowired
-    private GoodRepository goodRepository;
+    private final GoodRepository goodRepository;
+
+    public GoodService(GoodRepository goodRepository) {
+        this.goodRepository = goodRepository;
+    }
 
     public void save(Good good) {
         goodRepository.save(good);

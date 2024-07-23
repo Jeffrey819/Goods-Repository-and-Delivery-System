@@ -15,8 +15,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping
     public ResponseEntity<Order> getOrderByOrderId(@RequestParam("orderId") String orderId) {

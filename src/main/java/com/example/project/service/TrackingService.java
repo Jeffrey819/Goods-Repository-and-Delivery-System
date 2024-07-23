@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Service
 public class TrackingService {
-    @Autowired
-    private TrackingRepository trackingRepository;
+    private final TrackingRepository trackingRepository;
+
+    public TrackingService(TrackingRepository trackingRepository) {
+        this.trackingRepository = trackingRepository;
+    }
 
     public Optional<List<Tracking>> findByOrderId(String orderId)
     {

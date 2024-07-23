@@ -9,8 +9,11 @@ import java.util.Optional;
 
 @Service
 public class ReportService {
-    @Autowired
-    private ReportRepository reportRepository;
+    private final ReportRepository reportRepository;
+
+    public ReportService(ReportRepository reportRepository) {
+        this.reportRepository = reportRepository;
+    }
 
     public void save(Report report) {
         reportRepository.save(report);

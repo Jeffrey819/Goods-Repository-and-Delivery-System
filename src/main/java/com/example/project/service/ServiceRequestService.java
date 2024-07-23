@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Service
 public class ServiceRequestService {
-    @Autowired
-    private ServiceRequestRepository serviceRequestRepository;
+    private final ServiceRequestRepository serviceRequestRepository;
+
+    public ServiceRequestService(ServiceRequestRepository serviceRequestRepository) {
+        this.serviceRequestRepository = serviceRequestRepository;
+    }
 
     public void save(ServiceRequest serviceRequest) {
         serviceRequestRepository.save(serviceRequest);

@@ -15,8 +15,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("tracking")
 public class TrackingController {
-    @Autowired
-    private TrackingService trackingService;
+    private final TrackingService trackingService;
+
+    public TrackingController(TrackingService trackingService) {
+        this.trackingService = trackingService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Tracking>> findByOrderId(@RequestParam("orderId") String orderId) {

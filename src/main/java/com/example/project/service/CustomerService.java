@@ -9,8 +9,11 @@ import java.util.Optional;
 
 @Service
 public class CustomerService {
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     public void save(Customer customer) {
         customerRepository.save(customer);
