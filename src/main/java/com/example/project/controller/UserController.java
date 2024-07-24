@@ -22,41 +22,42 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String,String>> getUserbyUserId(@RequestParam("userId") String userId){
+    public ResponseEntity<?> getUserbyUserId(@RequestParam("userId") String userId){
         Map<String,String> info = new Hashtable<>();
         Optional<User> foundUser = userService.findByUserId(userId);
         if(foundUser.isPresent()){
             info.put("username",foundUser.get().getUsername());
+            info.put("userId",foundUser.get().getUserId());
             info.put("role",foundUser.get().getRole());
             return ResponseEntity.ok(info);
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with userId " + userId + " not found");
         }
 
     }
 
-    @PostMapping
-    public ResponseEntity<Map<String,String>> createUser(@RequestBody User newUser){
-        Map<String,String> info = new Hashtable<>();
-        Optional<User> user = userService.findByUserId(newUser.getUserId());
-        if(user.isPresent()){
-            info.put("userId",user.get().getUserId());
-            info.put("message","User already exists");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(info);
-        }
-        else
-        {
-            userService.save(newUser);
-            info.put("userId",newUser.getUserId());
-            info.put("message","User created successfully");
-            return ResponseEntity.status(HttpStatus.CREATED).body(info);
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<Map<String,String>> createUser(@RequestBody User newUser){
+//        Map<String,String> info = new Hashtable<>();
+//        Optional<User> user = userService.findByUserId(newUser.getUserId());
+//        if(user.isPresent()){
+//            info.put("userId",user.get().getUserId());
+//            info.put("message","User already exists");
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body(info);
+//        }
+//        else
+//        {
+//            userService.save(newUser);
+//            info.put("userId",newUser.getUserId());
+//            info.put("message","User created successfully");
+//            return ResponseEntity.status(HttpStatus.CREATED).body(info);
+//        }
+//    }
 
     @PostMapping("/signin")
-    public ResponseEntity<Map<String,String>> signIn(@RequestParam("username") String username, @RequestParam("password") String password){
+    public ResponseEntity<?> signIn(@RequestParam("username") String username, @RequestParam("password") String password){
         Map<String,String> info = new Hashtable<>();
 
         Optional<List<User>> users = userService.findByUsername(username);
@@ -69,15 +70,15 @@ public class UserController {
                 }
             }
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username and Password does not match, Please try again!");
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String,String>> signUp(@RequestBody User user){
+    public ResponseEntity<?> signUp(@RequestBody User user){
 
-        Optional<User> exsitedUser = userService.findByUserId(user.getUserId());
-        if(exsitedUser.isPresent()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        Optional<User> existedUser = userService.findByUserId(user.getUserId());
+        if(existedUser.isPresent()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User with userId " + user.getUserId() + " already exists");
         }
         else
         {
@@ -92,7 +93,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<Map<String,String>> updateUser(@RequestBody User updatedUser){
+    public ResponseEntity<?> updateUser(@RequestBody User updatedUser){
         Optional<User> user = userService.findByUserId(updatedUser.getUserId());
         if(user.isPresent()){
             userService.save(updatedUser);
@@ -103,7 +104,7 @@ public class UserController {
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with userId " + updatedUser.getUserId() + " not found");
         }
     }
 

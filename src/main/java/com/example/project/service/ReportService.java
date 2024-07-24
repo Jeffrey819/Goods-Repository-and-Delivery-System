@@ -24,7 +24,7 @@ public class ReportService {
 
     }
 
-    public Optional<List<Report>> findByUserId(String userId) {
+    public List<Report> findByUserId(String userId) {
         return reportRepository.findByUserId(userId);
     }
 

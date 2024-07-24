@@ -19,7 +19,7 @@ public class Report {
     @Column(name = "Parameters",nullable = false,columnDefinition = "TEXT")
     private String parameters;
 
-    @Column(name = "GeneratedDate",nullable = false,columnDefinition = "DATETIME")
+    @Column(name = "Generateddate",nullable = false,columnDefinition = "DATETIME")
     private LocalDateTime generatedDate;
 
     //Constructors

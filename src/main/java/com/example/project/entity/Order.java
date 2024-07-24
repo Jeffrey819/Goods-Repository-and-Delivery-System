@@ -17,19 +17,19 @@ public class Order {
     @Column(name = "CustomerID",nullable = false,length = 36)
     private String customerId;
 
-    @Column(name = "OrderDate",nullable = false,columnDefinition = "DATETIME")
+    @Column(name = "Orderdate",nullable = false,columnDefinition = "DATETIME")
     private LocalDateTime orderDate;
 
     @Column(name = "Status",nullable = false,length = 20)
     private String status;
 
-    @Column(name = "TotalAmount",nullable = false,precision = 10,scale = 2)
+    @Column(name = "Totalamount",nullable = false,precision = 10,scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(name = "PaymentMethod",nullable = false,length = 50)
+    @Column(name = "Paymentmethod",nullable = false,length = 50)
     private String paymentMethod;
 
-    @Column(name = "DeliveryMethod",nullable = false,length = 50)
+    @Column(name = "Deliverymethod",nullable = false,length = 50)
     private String deliveryMethod;
 
     @Column(name = "Remarks",nullable = false,columnDefinition = "TEXT")

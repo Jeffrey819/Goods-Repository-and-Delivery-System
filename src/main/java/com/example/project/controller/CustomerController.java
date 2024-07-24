@@ -2,9 +2,7 @@ package com.example.project.controller;
 
 import com.example.project.entity.Customer;
 import com.example.project.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +20,12 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<Customer> getCustomerById(@RequestParam String customerId) {
+    public ResponseEntity<?> getCustomerById(@RequestParam String customerId) {
         Optional<Customer> customer = customerService.findByCustomerId(customerId);
         if(customer.isPresent())
             return ResponseEntity.ok(customer.get());
         else
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer with customer id " + customerId + " not found");
     }
 
     @PostMapping
@@ -35,7 +33,10 @@ public class CustomerController {
          Optional<Customer> savedCustomer= customerService.findByCustomerId(customer.getCustomerId());
          if(savedCustomer.isPresent())
          {
-             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+             Map<String,String> info = new HashMap<>();
+             info.put("customerId", customer.getCustomerId());
+             info.put("message","CustomerId already exists");
+             return ResponseEntity.status(HttpStatus.CONFLICT).body(info);
          }
          else
          {
@@ -49,7 +50,7 @@ public class CustomerController {
     }
 
     @PutMapping
-    public ResponseEntity<Map<String,String>> updateCustomer(@RequestBody Customer updatedCustomer) {
+    public ResponseEntity<?> updateCustomer(@RequestBody Customer updatedCustomer) {
         Optional<Customer> customer = customerService.findByCustomerId(updatedCustomer.getCustomerId());
         if(customer.isPresent()) {
             customerService.save(updatedCustomer);
@@ -60,7 +61,7 @@ public class CustomerController {
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with customer id " + updatedCustomer.getCustomerId() + " not found");
         }
     }
 

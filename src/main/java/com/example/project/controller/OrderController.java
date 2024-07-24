@@ -22,41 +22,48 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<Order> getOrderByOrderId(@RequestParam("orderId") String orderId) {
+    public ResponseEntity<?> getOrderByOrderId(@RequestParam("orderId") String orderId) {
         Optional<Order> order = orderService.findByOrderId(orderId);
         if (order.isPresent()) {
             return ResponseEntity.ok(order.get());
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order with orderId " + orderId + " not found");
         }
     }
 
     @GetMapping("/customerId")
-    public ResponseEntity<List<Order>> getOrderByCustomerId(@RequestParam("customerId") String customerId) {
-        Optional<List<Order>> orders = orderService.findByCustomerId(customerId);
-        if (orders.isPresent()) {
-            return ResponseEntity.ok(orders.get());
+    public ResponseEntity<?> getOrderByCustomerId(@RequestParam("customerId") String customerId) {
+        List<Order> orders = orderService.findByCustomerId(customerId);
+        if (orders.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Orders belongs to customer with customerId " + customerId + " not found");
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(orders);
         }
     }
 
     @PostMapping
-    public ResponseEntity<Map<String,String>> createOrder(@RequestBody Order order) {
-        Map<String,String> info = new HashMap<>();
-        orderService.save(order);
-        info.put("orderId",order.getOrderId());
-        info.put("message","Order created successfully");
-        return ResponseEntity.status(HttpStatus.CREATED).body(info);
+    public ResponseEntity<?> createOrder(@RequestBody Order order) {
+        Optional<Order> savedOrder = orderService.findByOrderId(order.getOrderId());
+        if (savedOrder.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Order with orderId " + order.getOrderId() + " already exists");
+        }
+        else
+        {
+            Map<String,String> info = new HashMap<>();
+            orderService.save(order);
+            info.put("orderId",order.getOrderId());
+            info.put("message","Order created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(info);
+        }
 
     }
 
     @PutMapping
-    public ResponseEntity<Map<String,String>> updateOrder(@RequestBody Order order) {
+    public ResponseEntity<?> updateOrder(@RequestBody Order order) {
         Map<String,String> info = new HashMap<>();
         Optional<Order> oldOrder = orderService.findByOrderId(order.getOrderId());
         if (oldOrder.isPresent()) {
@@ -65,7 +72,7 @@ public class OrderController {
             info.put("message","Order updated successfully");
             return ResponseEntity.ok(info);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order with orderId " + order.getOrderId() + " not found");
     }
 
     @DeleteMapping

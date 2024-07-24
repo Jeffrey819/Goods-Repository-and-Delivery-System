@@ -25,8 +25,8 @@ public class OrderService {
         return order;
     }
 
-    public Optional<List<Order>> findByCustomerId(String customerId) {
-        Optional<List<Order>> orders = orderRepository.findByCustomerId(customerId);
+    public List<Order> findByCustomerId(String customerId) {
+        List<Order> orders = orderRepository.findByCustomerId(customerId);
         return orders;
     }
 
