@@ -25,8 +25,8 @@ public class ServiceRequestService {
         return request;
     }
 
-    public Optional<List<ServiceRequest>> findByCustomerId(String customerId) {
-        Optional<List<ServiceRequest>> requests = serviceRequestRepository.findByCustomerId(customerId);
+    public List<ServiceRequest> findByCustomerId(String customerId) {
+        List<ServiceRequest> requests = serviceRequestRepository.findByCustomerId(customerId);
         return requests;
     }
 

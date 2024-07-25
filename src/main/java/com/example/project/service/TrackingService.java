@@ -2,6 +2,7 @@ package com.example.project.service;
 
 import com.example.project.entity.Tracking;
 import com.example.project.repository.TrackingRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,9 @@ public class TrackingService {
         this.trackingRepository = trackingRepository;
     }
 
-    public Optional<List<Tracking>> findByOrderId(String orderId)
+    public List<Tracking> findByOrderId(String orderId)
     {
-        Optional<List<Tracking>> trackingList = trackingRepository.findByOrderId(orderId);
+        List<Tracking> trackingList = trackingRepository.findByOrderId(orderId);
         return trackingList;
     }
 
@@ -27,6 +28,7 @@ public class TrackingService {
         trackingRepository.save(tracking);
     }
 
+    @Transactional
     public void deleteByOrderId(String orderId)
     {
         trackingRepository.deleteByOrderId(orderId);

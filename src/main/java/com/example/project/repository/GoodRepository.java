@@ -9,5 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface GoodRepository extends JpaRepository<Good, String> {
-    Optional<List<Good>> findByOrderId(String orderId);
+    List<Good> findByOrderId(String orderId);
+    void deleteByOrderId(String orderId);
 }

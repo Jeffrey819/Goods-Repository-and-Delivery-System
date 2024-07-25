@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, String> {
-    Optional<List<ServiceRequest>> findByCustomerId(String customerId);
+    List<ServiceRequest> findByCustomerId(String customerId);
 
 }

@@ -2,7 +2,7 @@ package com.example.project.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ServiceRequests")
+@Table(name = "Servicerequests")
 public class ServiceRequest {
     @Id
     @Column(name = "RequestID",nullable = false,length = 36)

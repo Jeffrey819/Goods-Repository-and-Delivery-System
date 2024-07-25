@@ -22,26 +22,26 @@ public class GoodController {
     }
 
     @GetMapping
-    public ResponseEntity<Good> getGoodByGoodId(@RequestParam String goodId) {
+    public ResponseEntity<?> getGoodByGoodId(@RequestParam("goodId") String goodId) {
         Optional<Good> good = goodService.findByGoodId(goodId);
         if (good.isPresent()) {
             return ResponseEntity.ok(good.get());
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Good with goodId " + goodId + " not found");
         }
     }
 
     @GetMapping("/orderId")
-    public ResponseEntity<List<Good>> getGoodByOrderId(@RequestParam String orderId) {
-        Optional<List<Good>> goods = goodService.findByOrderId(orderId);
-        if (goods.isPresent()) {
-            return ResponseEntity.ok(goods.get());
+    public ResponseEntity<?> getGoodByOrderId(@RequestParam("orderId") String orderId) {
+        List<Good> goods = goodService.findByOrderId(orderId);
+        if (goods.isEmpty()) {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Goods of Order with OrderId " + orderId + " not found");
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(goods);
         }
     }
 
@@ -56,7 +56,7 @@ public class GoodController {
     }
 
     @PutMapping
-    public ResponseEntity<Map<String,String>> updateGood(@RequestBody Good good) {
+    public ResponseEntity<?> updateGood(@RequestBody Good good) {
         Optional<Good> oldGood = goodService.findByGoodId(good.getGoodId());
         if (oldGood.isPresent()) {
             goodService.save(good);
@@ -67,17 +67,26 @@ public class GoodController {
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Good with goodId " + good.getGoodId() + " not found");
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<Map<String,String>> deleteGood(@RequestParam String goodId) {
+    public ResponseEntity<Map<String,String>> deleteGood(@RequestParam("goodId") String goodId) {
         goodService.deleteByGoodId(goodId);
         Map<String,String> info = new HashMap<>();
         info.put("goodId",goodId);
         info.put("message","good deleted successfully");
         return ResponseEntity.ok(info);
 
+    }
+
+    @DeleteMapping("/orderId")
+    public ResponseEntity<Map<String,String>> deleteByOrderId(@RequestParam("orderId") String orderId) {
+        goodService.deleteByOrderId(orderId);
+        Map<String,String> info = new HashMap<>();
+        info.put("orderId",orderId);
+        info.put("message","goods of Order deleted successfully");
+        return ResponseEntity.ok(info);
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("servicerequest")
+@RequestMapping("servicerequests")
 public class ServiceRequestController {
     private final ServiceRequestService serviceRequestService;
 
@@ -21,35 +21,35 @@ public class ServiceRequestController {
         this.serviceRequestService = serviceRequestService;
     }
 
-    @GetMapping("/requestId")
-    public ResponseEntity<ServiceRequest> getByRequestId(@RequestParam("requestId") String requestId) {
+    @GetMapping
+    public ResponseEntity<?> getByRequestId(@RequestParam("requestId") String requestId) {
         Optional<ServiceRequest> request = serviceRequestService.findByRequestId(requestId);
         if (request.isPresent()) {
             return ResponseEntity.ok(request.get());
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Service request with requestId " + requestId + " not found");
         }
     }
 
     @GetMapping("customerId")
-    public ResponseEntity<List<ServiceRequest>> getByCustomerId(@RequestParam("customerId") String customerId) {
-        Optional<List<ServiceRequest>> requests = serviceRequestService.findByCustomerId(customerId);
-        if (requests.isPresent()) {
-            return ResponseEntity.ok(requests.get());
+    public ResponseEntity<?> getByCustomerId(@RequestParam("customerId") String customerId) {
+        List<ServiceRequest> requests = serviceRequestService.findByCustomerId(customerId);
+        if (requests.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Service request of Customer " + customerId + " not found");
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(requests);
         }
     }
 
     @PostMapping
-    public ResponseEntity<Map<String,String>> createRequest(@RequestBody ServiceRequest newRequest) {
+    public ResponseEntity<?> createRequest(@RequestBody ServiceRequest newRequest) {
         Optional<ServiceRequest> request = serviceRequestService.findByRequestId(newRequest.getRequestId());
         if (request.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Service request with requestId " + newRequest.getRequestId() + " already exists");
         }
         else
         {
@@ -62,7 +62,7 @@ public class ServiceRequestController {
     }
 
     @PutMapping
-    public ResponseEntity<Map<String,String>> updateRequest(@RequestBody ServiceRequest newRequest) {
+    public ResponseEntity<?> updateRequest(@RequestBody ServiceRequest newRequest) {
         Optional<ServiceRequest> request = serviceRequestService.findByRequestId(newRequest.getRequestId());
         if (request.isPresent()) {
             serviceRequestService.save(newRequest);
@@ -73,7 +73,7 @@ public class ServiceRequestController {
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Service request with requestId " + newRequest.getRequestId() + " not found");
         }
     }
 

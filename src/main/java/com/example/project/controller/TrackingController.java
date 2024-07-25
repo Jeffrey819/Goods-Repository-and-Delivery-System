@@ -22,14 +22,15 @@ public class TrackingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Tracking>> findByOrderId(@RequestParam("orderId") String orderId) {
-        Optional<List<Tracking>> trackingList = trackingService.findByOrderId(orderId);
-        if (trackingList.isPresent()) {
-            return ResponseEntity.ok(trackingList.get());
+    public ResponseEntity<?> findByOrderId(@RequestParam("orderId") String orderId) {
+        List<Tracking> trackingList = trackingService.findByOrderId(orderId);
+        if (trackingList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("TrackingList of Order with OrderId " + orderId + " not found");
+
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.OK).body(trackingList);
         }
     }
 
@@ -44,11 +45,11 @@ public class TrackingController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Map<String,String>> deleteTracking(@RequestParam("orderId") String orderId){
+    public ResponseEntity<Map<String,String>> deleteByOrderId(@RequestParam("orderId") String orderId){
         trackingService.deleteByOrderId(orderId);
         Map<String,String> info = new HashMap<>();
         info.put("orderId",orderId);
-        info.put("message","trackingList deleted successfully");
+        info.put("message","trackingList of order "+orderId+" deleted successfully");
         return ResponseEntity.ok(info);
     }
 }

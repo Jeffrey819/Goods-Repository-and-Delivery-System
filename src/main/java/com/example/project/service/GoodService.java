@@ -2,6 +2,7 @@ package com.example.project.service;
 
 import com.example.project.entity.Good;
 import com.example.project.repository.GoodRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,8 @@ public class GoodService {
         goodRepository.save(good);
     }
 
-    public Optional<List<Good>> findByOrderId(String orderId) {
-        Optional<List<Good>> goods = goodRepository.findByOrderId(orderId);
+    public List<Good> findByOrderId(String orderId) {
+        List<Good> goods = goodRepository.findByOrderId(orderId);
         return goods;
     }
 
@@ -32,5 +33,9 @@ public class GoodService {
 
     public void deleteByGoodId(String goodId) {
         goodRepository.deleteById(goodId);
+    }
+    @Transactional
+    public void deleteByOrderId(String orderId) {
+        goodRepository.deleteByOrderId(orderId);
     }
 }

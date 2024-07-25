@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface TrackingRepository extends JpaRepository<Tracking, String> {
-    Optional<List<Tracking>> findByOrderId(String orderId);
+    List<Tracking> findByOrderId(String orderId);
 
     @Transactional
     void deleteByOrderId(String orderId);
