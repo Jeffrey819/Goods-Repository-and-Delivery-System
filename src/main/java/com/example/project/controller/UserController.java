@@ -38,23 +38,6 @@ public class UserController {
 
     }
 
-//    @PostMapping
-//    public ResponseEntity<Map<String,String>> createUser(@RequestBody User newUser){
-//        Map<String,String> info = new Hashtable<>();
-//        Optional<User> user = userService.findByUserId(newUser.getUserId());
-//        if(user.isPresent()){
-//            info.put("userId",user.get().getUserId());
-//            info.put("message","User already exists");
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body(info);
-//        }
-//        else
-//        {
-//            userService.save(newUser);
-//            info.put("userId",newUser.getUserId());
-//            info.put("message","User created successfully");
-//            return ResponseEntity.status(HttpStatus.CREATED).body(info);
-//        }
-//    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestParam("username") String username, @RequestParam("password") String password){
@@ -86,8 +69,7 @@ public class UserController {
             userService.save(user);
             info.put("userId",user.getUserId());
             info.put("message","User registered successfully");
-
-            return ResponseEntity.ok(info);
+            return ResponseEntity.status(HttpStatus.CREATED).body(info);
 
         }
     }

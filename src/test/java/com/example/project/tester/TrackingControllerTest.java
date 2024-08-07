@@ -20,6 +20,9 @@ public class TrackingControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public TrackingControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
     @Test
     public void testCreateAndFetchTrackings() throws Exception {
         List<Tracking> trackings = DataGenerator.generateRandomTrackings(20000);
@@ -34,8 +37,8 @@ public class TrackingControllerTest {
                     .andExpect(jsonPath("$.message").value("tracking created successfully"));
         }
         System.out.println("Complete testing create a tracking");
-        //Testing interface for get trackings for a order
 
+        //Testing interface for get trackings for a order
         for (Tracking tracking : trackings) {
             mockMvc.perform(get("/tracking")
                             .param("orderId", tracking.getOrderId()))

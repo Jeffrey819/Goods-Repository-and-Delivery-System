@@ -20,6 +20,9 @@ public class ServiceRequestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public ServiceRequestControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
     @Test
     public void testCreateAndFetchServiceRequests() throws Exception {
         List<ServiceRequest> requests = DataGenerator.generateRandomServiceRequests(20000);
@@ -33,8 +36,8 @@ public class ServiceRequestControllerTest {
                     .andExpect(jsonPath("$.message").value("request created successfully"));
         }
         System.out.println("Complete testing create service requests");
-        //Testing interface for get a request by requestId
 
+        //Testing interface for get a request by requestId
         for (ServiceRequest request : requests) {
             mockMvc.perform(get("/servicerequests")
                             .param("requestId", request.getRequestId()))

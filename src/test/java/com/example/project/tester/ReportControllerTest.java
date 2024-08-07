@@ -23,6 +23,9 @@ public class ReportControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public ReportControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
     @Test
     public void testCreateAndFetchReports() throws Exception {
         List<Report> reports = DataGenerator.generateRandomReports(20000);

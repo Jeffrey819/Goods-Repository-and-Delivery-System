@@ -20,6 +20,9 @@ public class GoodControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public GoodControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
     @Test
     public void testCreateAndFetchGoods() throws Exception {
         List<Good> goods = DataGenerator.generateRandomGoods(20000);
@@ -61,7 +64,7 @@ public class GoodControllerTest {
         }
         System.out.println("Complete testing for getting goods for a order");
 
-        //Testing interface for update user
+        //Testing interface for update good
         for (Good good : goods) {
             mockMvc.perform(put("/goods")
                             .contentType(MediaType.APPLICATION_JSON)

@@ -20,6 +20,10 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public UserControllerTest(MockMvc mockMvc){
+        this.mockMvc = mockMvc;
+    }
+
     @Test
     public void testCreateAndFetchUsers() throws Exception {
         List<User> users = DataGenerator.generateRandomUsers(20000);
@@ -35,7 +39,6 @@ public class UserControllerTest {
         System.out.println("Complete testing user sign up");
 
         //Testing interface for user sign in
-
         for (User user: users) {
             mockMvc.perform(post("/users/signin")
                             .param("username", user.getUsername())

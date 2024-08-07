@@ -24,6 +24,9 @@ public class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public OrderControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
     @Test
     public void testCreateAndFetchOrders() throws Exception {
         List<Order> orders = DataGenerator.generateRandomOrders(20000);

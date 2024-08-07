@@ -61,7 +61,7 @@ public class CustomerController {
         }
         else
         {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with customer id " + updatedCustomer.getCustomerId() + " not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer with customer id " + updatedCustomer.getCustomerId() + " not found");
         }
     }
 

@@ -20,6 +20,9 @@ public class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public CustomerControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
     @Test
     public void testCreateAndFetchCustomers() throws Exception {
         List<Customer> customers = DataGenerator.generateRandomCustomers(20000);
@@ -33,8 +36,8 @@ public class CustomerControllerTest {
                     .andExpect(jsonPath("$.message").value("Customer created successfully"));
         }
         System.out.println("Complete testing create customer");
-        //Testing interface for get a customer by customerId
 
+        //Testing interface for get a customer by customerId
         for (Customer customer : customers) {
             mockMvc.perform(get("/customers")
                             .param("customerId", customer.getCustomerId()))

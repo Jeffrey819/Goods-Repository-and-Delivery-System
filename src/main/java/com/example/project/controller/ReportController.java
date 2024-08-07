@@ -80,7 +80,7 @@ public class ReportController {
     @DeleteMapping
     public ResponseEntity<String> deleteReport(@RequestParam("reportId") String reportId) {
         reportService.deleteByReportId(reportId);
-        return ResponseEntity.ok("Report deleted successfully");
+        return ResponseEntity.ok("Report with reportId "+ reportId+" deleted successfully");
     }
 
 
