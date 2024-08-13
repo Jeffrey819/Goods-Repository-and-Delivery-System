@@ -1,6 +1,7 @@
 package com.example.project.controller;
 
 import com.example.project.entity.User;
+import com.example.project.security.JwtUtil;
 import com.example.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -48,6 +51,8 @@ public class UserController {
             for(User user : users.get()){
                 if(user.getPassword().equals(password)){
                     info.put("userId",user.getUserId());
+                    String token = jwtUtil.createToken(user.getUserId(),user.getRole());
+                    info.put("token",token);
                     info.put("message","Login successfully");
                     return ResponseEntity.ok(info);
                 }
