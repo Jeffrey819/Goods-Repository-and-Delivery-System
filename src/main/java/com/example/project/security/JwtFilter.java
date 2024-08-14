@@ -1,68 +1,75 @@
 package com.example.project.security;
 
-import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 @Component
-@WebFilter(urlPatterns = "/*")
-public class JwtFilter implements Filter {
+public class JwtFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtil jwtUtil;
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        try{
-            HttpServletRequest request = (HttpServletRequest) servletRequest;
-            HttpServletResponse response = (HttpServletResponse) servletResponse;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-            //First extract the url, to exclude the sign in and sign up requests
-            String url = request.getRequestURI();
+        // Extract the URL
+        String url = request.getRequestURI();
+        System.out.println("Request URL: " + url);
 
-            if(url.contains("/signin") || url.contains("/signup")) {
-                //Do nothing, just skip the token validation
-                filterChain.doFilter(request, response);
-
-            }
-            else
-            {
-                //Not signin or signup requests, do the token validation
-                String token = request.getHeader("Authorization");
-                int result_validation = jwtUtil.validateToken(token);
-                if(result_validation == 0)
-                {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Token is invalid!");
-                    response.getWriter().flush();
-                }
-                else if(result_validation == 2)
-                {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Token has expired, please sign in again!");
-                    response.getWriter().flush();
-                }
-                else{
-                    //result_validation=1, which means the validation success.
-                    filterChain.doFilter(request, response);
-                }
-
-            }
-        }
-        catch (java.io.IOException e) {
-            throw new RuntimeException(e);
+        if ("/users/signin".equals(url) || "/users/signup".equals(url)) {
+            // Skip token validation for signin and signup requests
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        // Perform token validation
+        String token = request.getHeader("Authorization");
+        if (token == null || token.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token not found!");
+            response.getWriter().flush();
+            return;
+        }
+
+        int resultValidation = jwtUtil.validateToken(token);
+        if (resultValidation == 0 || resultValidation == 3) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token is invalid!");
+            response.getWriter().flush();
+            return;
+        } else if (resultValidation == 2) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token has expired, please sign in again!");
+            response.getWriter().flush();
+            return;
+        }
+//        else if (resultValidation == 3)
+//        {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Token parsing error!");
+//            response.getWriter().flush();
+//            return;
+//        }
+
+        // Token is valid, set authentication context
+        String userId = jwtUtil.getUserIdFromToken(token); // Add a method to extract userId from token
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userId);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        filterChain.doFilter(request, response);
     }
-
 }

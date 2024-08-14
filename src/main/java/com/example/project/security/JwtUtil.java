@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -39,6 +37,8 @@ public class JwtUtil {
 
     public int validateToken(String token) {
         try{
+            System.out.println("Validating token!");
+            System.out.println("The token is:"+token);
             Key signinKey = Keys.hmacShaKeyFor(KEY.getBytes());
             Claims claims = Jwts.parser()
                     .setSigningKey(signinKey)
@@ -46,20 +46,41 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody();
             String userId = claims.get("userId", String.class);
+            System.out.println(userId);
             String userName = claims.get("userName", String.class);
+            if(isTokenExpired(claims.getExpiration()))
+            {
+                return 2;//Token has expired
+            }
 
             Optional<User> user = userService.findByUserId(userId);
             if(user.isPresent()){
                 //User found successfully, token validation pass
+                System.out.println("token validation success");
                 return 1;
             }
             else
+            {
+                System.out.println("token validation failed");
                 return 0;//User not found, which means the token is invalid or modified
+            }
         }
         catch(Exception e){
-            //The case that token has expired,which is invalid too.
-            return 2;
+            //The case there is some error when parsing token
+            return 3;
         }
     }
 
+    private boolean isTokenExpired(Date expiration) {
+        return expiration.before(new Date());
+    }
+
+    public String getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(Keys.hmacShaKeyFor(KEY.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("userId", String.class);
+    }
 }
