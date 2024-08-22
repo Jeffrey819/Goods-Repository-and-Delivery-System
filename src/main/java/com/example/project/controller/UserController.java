@@ -2,8 +2,10 @@ package com.example.project.controller;
 
 import com.example.project.entity.User;
 import com.example.project.security.JwtUtil;
+import com.example.project.security.rsa.RSAManager;
 import com.example.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +19,17 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final RSAManager clientRsaManager;
+    private final RSAManager serverRsaManager;
     @Autowired
     private JwtUtil jwtUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService,@Qualifier("clientRsaManager") RSAManager clientRsaManager,@Qualifier("serverRsaManager") RSAManager serverRsaManager) {
         this.userService = userService;
+        this.clientRsaManager = clientRsaManager;
+        this.serverRsaManager = serverRsaManager;
     }
+
 
     @GetMapping
     public ResponseEntity<?> getUserbyUserId(@RequestParam("userId") String userId){
@@ -52,7 +59,20 @@ public class UserController {
                 if(user.getPassword().equals(password)){
                     info.put("userId",user.getUserId());
                     String token = jwtUtil.createToken(user.getUserId(),user.getRole());
-                    info.put("token",token);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    StringBuilder test_stringBuilder = new StringBuilder();
+
+                    try{
+                        stringBuilder.append(clientRsaManager.encrypt(token,clientRsaManager.getRsaKeyPair().getPublicKey()));
+                        test_stringBuilder.append(serverRsaManager.encrypt(token,serverRsaManager.getRsaKeyPair().getPublicKey()));
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    String token_encrypted = stringBuilder.toString();
+                    String token_test = test_stringBuilder.toString();
+                    info.put("token",token_encrypted);
+                    info.put("token_test",token_test);
                     info.put("message","Login successfully");
                     return ResponseEntity.ok(info);
                 }
