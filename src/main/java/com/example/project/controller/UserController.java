@@ -20,14 +20,14 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final RSAManager clientRsaManager;
-    private final RSAManager serverRsaManager;
+//    private final RSAManager serverRsaManager;
     @Autowired
     private JwtUtil jwtUtil;
 
     public UserController(UserService userService,@Qualifier("clientRsaManager") RSAManager clientRsaManager,@Qualifier("serverRsaManager") RSAManager serverRsaManager) {
         this.userService = userService;
         this.clientRsaManager = clientRsaManager;
-        this.serverRsaManager = serverRsaManager;
+//        this.serverRsaManager = serverRsaManager;
     }
 
 
@@ -60,19 +60,19 @@ public class UserController {
                     info.put("userId",user.getUserId());
                     String token = jwtUtil.createToken(user.getUserId(),user.getRole());
                     StringBuilder stringBuilder = new StringBuilder();
-                    StringBuilder test_stringBuilder = new StringBuilder();
+//                    StringBuilder test_stringBuilder = new StringBuilder();
 
                     try{
                         stringBuilder.append(clientRsaManager.encrypt(token,clientRsaManager.getRsaKeyPair().getPublicKey()));
-                        test_stringBuilder.append(serverRsaManager.encrypt(token,serverRsaManager.getRsaKeyPair().getPublicKey()));
+//                        test_stringBuilder.append(serverRsaManager.encrypt(token,serverRsaManager.getRsaKeyPair().getPublicKey()));
                     }
                     catch(Exception e){
                         e.printStackTrace();
                     }
                     String token_encrypted = stringBuilder.toString();
-                    String token_test = test_stringBuilder.toString();
+//                    String token_test = test_stringBuilder.toString();
                     info.put("token",token_encrypted);
-                    info.put("token_test",token_test);
+//                    info.put("token_test",token_test);
                     info.put("message","Login successfully");
                     return ResponseEntity.ok(info);
                 }
